@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { SignUpValidation } from "@/lib/validation/schema";
 import Loader from "@/components/shared/Loader";
 import { Link } from "react-router-dom";
+import { createUserAccount } from "@/lib/appwrite/api";
 
 const SignupForm = () => {
   const form = useForm<z.infer<typeof SignUpValidation>>({
@@ -26,11 +27,13 @@ const SignupForm = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof SignUpValidation>) {
-    console.log(values);
+  const onSubmit=async(values: z.infer<typeof SignUpValidation>) =>{
+   const newUser=await createUserAccount(values);
+
+   console.log(newUser)
   }
 
-  const isLoading = true;
+  const isLoading = false;
 
   return (
     <div>
