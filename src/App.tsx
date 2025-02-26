@@ -4,6 +4,7 @@ import SignupForm from "./auth/form/SignupForm";
 import Home from "./root/pages/Home";
 import AuthLayout from "./auth/AuthLayout";
 import RootLayout from "./root/RootLayout";
+import { Toaster } from "./components/ui/sonner";
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
           </Route>
         </Routes>
       </main>
+      <Toaster />
     </Router>
   );
 };
