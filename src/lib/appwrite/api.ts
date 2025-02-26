@@ -50,3 +50,19 @@ export const createUserAccount = async (user: INewUser) => {
     return error;
   }
 };
+
+export const signInAccount = async (user: {
+  email: string;
+  password: string;
+}) => {
+  try {
+    const session = await account.createEmailPasswordSession(
+      user.email,
+      user.password
+    );
+
+    return session;
+  } catch (error) {
+    console.log(error);
+  }
+};

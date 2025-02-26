@@ -15,11 +15,13 @@ import { SignUpValidation } from "@/lib/validation/schema";
 import Loader from "@/components/shared/Loader";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { useCreateUserAccountMutation } from "@/lib/react-query/queriesAndMutations";
+import { useCreateUserAccountMutation, useSignInAccountMutation } from "@/lib/react-query/queriesAndMutations";
 
 const SignupForm = () => {
 
   const {mutateAsync:createUserAccount,isLoading:isCreatingUser}=useCreateUserAccountMutation()
+
+  const {mutateAsync:signInAccount,isLoading:isSigningIn}=useSignInAccountMutation()
 
   const form = useForm<z.infer<typeof SignUpValidation>>({
     resolver: zodResolver(SignUpValidation),
@@ -36,6 +38,12 @@ const SignupForm = () => {
 
    if(!newUser){
      return toast("Sign up failed, please try again");
+   }
+
+   const session=await signInAccount({email:values.email,password:values.password});
+
+   if(!session) {
+    return toast("Sign in failed, please try again");
    }
   }
 
