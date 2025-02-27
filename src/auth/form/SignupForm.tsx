@@ -13,15 +13,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { SignUpValidation } from "@/lib/validation/schema";
 import Loader from "@/components/shared/Loader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateUserAccountMutation, useSignInAccountMutation } from "@/lib/react-query/queriesAndMutations";
+import { useUserContext } from "@/context/AuthContext";
 
 const SignupForm = () => {
 
-  const {mutateAsync:createUserAccount,isLoading:isCreatingUser}=useCreateUserAccountMutation()
+  const {checkAuthUser}=useUserContext()
+  const navigate=useNavigate()
 
-  const {mutateAsync:signInAccount,isLoading:isSigningIn}=useSignInAccountMutation()
+  const {mutateAsync:createUserAccount,isPending:isCreatingUser}=useCreateUserAccountMutation()
+
+  const {mutateAsync:signInAccount,isPending:isSigningIn}=useSignInAccountMutation()
 
   const form = useForm<z.infer<typeof SignUpValidation>>({
     resolver: zodResolver(SignUpValidation),
@@ -44,6 +48,17 @@ const SignupForm = () => {
 
    if(!session) {
     return toast("Sign in failed, please try again");
+   }
+
+   const isLoggedIn=await checkAuthUser();
+
+   if(isLoggedIn) {
+    form.reset()
+    navigate("/")
+
+    
+   } else {
+    return toast("Sign up failed, Please try again.")
    }
   }
 
