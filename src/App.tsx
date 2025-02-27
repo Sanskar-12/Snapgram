@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {  Routes, Route } from "react-router-dom";
 import SigninForm from "./auth/form/SigninForm";
 import SignupForm from "./auth/form/SignupForm";
 import Home from "./root/pages/Home";
@@ -8,7 +8,6 @@ import { Toaster } from "./components/ui/sonner";
 
 const App = () => {
   return (
-    <Router>
       <main className="flex h-screen">
         <Routes>
           {/* public routes */}
@@ -22,9 +21,8 @@ const App = () => {
             <Route path="/" element={<Home />} />
           </Route>
         </Routes>
+        <Toaster />
       </main>
-      <Toaster />
-    </Router>
   );
 };
 
