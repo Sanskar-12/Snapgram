@@ -43,6 +43,7 @@ const SignupForm = () => {
    if(!newUser){
      return toast("Sign up failed, please try again");
    }
+   
 
    const session=await signInAccount({email:values.email,password:values.password});
 

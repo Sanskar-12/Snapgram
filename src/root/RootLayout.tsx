@@ -1,9 +1,21 @@
+import Bottombar from "@/components/shared/Bottombar";
+import Sidebar from "@/components/shared/Sidebar";
+import Topbar from "@/components/shared/Topbar";
+import { Outlet } from "react-router-dom";
 
 const RootLayout = () => {
+  return (
+    <div className="w-full md:flex">
+      <Topbar/>
+      <Sidebar/>
 
+      <section className="flex flex-1 h-full">
+        <Outlet/>
+      </section>
 
-
-  return <div>RootLayout</div>;
+      <Bottombar/>
+    </div>
+  );
 };
 
 export default RootLayout;
