@@ -1,7 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 import { getCurrentUser } from "@/lib/appwrite/api";
 import { IUser } from "@/types";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 
 export const INITIAL_USER = {
@@ -13,7 +19,8 @@ export const INITIAL_USER = {
   bio: "",
 };
 
-const INITIAL_STATE = { // 1. Create Initial State
+const INITIAL_STATE = {
+  // 1. Create Initial State
   user: INITIAL_USER,
   isLoading: false,
   isAuthenticated: false,
@@ -33,21 +40,24 @@ type IContextType = {
 
 const AuthContext = createContext<IContextType>(INITIAL_STATE); // 2. Create Context
 
-export const AuthProvider=({children}:{ // 3. Create Provider
-    children:ReactNode
-})=>{
-  const navigate=useNavigate()
-  const [user,setUser]=useState<IUser>(INITIAL_USER)
-  const [isLoading,setIsLoading]=useState(false)
-  const [isAuthenticated,setIsAuthenticated]=useState(false)
+export const AuthProvider = ({
+  children,
+}: {
+  // 3. Create Provider
+  children: ReactNode;
+}) => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState<IUser>(INITIAL_USER);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const checkAuthUser=async()=>{
-    setIsLoading(true)
+  const checkAuthUser = async () => {
+    setIsLoading(true);
 
     try {
-      const currentUser=await getCurrentUser()
-      
-      if(currentUser) {
+      const currentUser = await getCurrentUser();
+
+      if (currentUser) {
         setUser({
           id: currentUser.$id,
           name: currentUser.name,
@@ -55,23 +65,22 @@ export const AuthProvider=({children}:{ // 3. Create Provider
           username: currentUser.username,
           imageUrl: currentUser.imageUrl,
           bio: currentUser.bio,
-        })
+        });
 
-        setIsAuthenticated(true)
-        return true
+        setIsAuthenticated(true);
+        return true;
       }
 
-      return false
-      
+      return false;
     } catch (error) {
-      console.log(error)
-      return false
+      console.log(error);
+      return false;
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     const cookieFallback = localStorage.getItem("cookieFallback");
     if (
       cookieFallback === "[]" ||
@@ -81,23 +90,19 @@ export const AuthProvider=({children}:{ // 3. Create Provider
       navigate("/sign-in");
     }
 
-    checkAuthUser()
-  },[navigate])
+    checkAuthUser();
+  }, [navigate]);
 
+  const value = {
+    user,
+    setUser,
+    isLoading,
+    isAuthenticated,
+    setIsAuthenticated,
+    checkAuthUser,
+  };
 
-    const value={
-        user,
-        setUser,
-        isLoading,
-        isAuthenticated,
-        setIsAuthenticated,
-        checkAuthUser
-    }
-
-    return (
-        <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-    )
-
-}
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
 
 export const useUserContext = () => useContext(AuthContext);

@@ -15,16 +15,15 @@ import { SignInValidation } from "@/lib/validation/schema";
 import Loader from "@/components/shared/Loader";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import {  useSignInAccountMutation } from "@/lib/react-query/queriesAndMutations";
+import { useSignInAccountMutation } from "@/lib/react-query/queriesAndMutations";
 import { useUserContext } from "@/context/AuthContext";
 
 const SigninForm = () => {
+  const { checkAuthUser } = useUserContext();
+  const navigate = useNavigate();
 
-  const {checkAuthUser}=useUserContext()
-  const navigate=useNavigate()
-
-
-  const {mutateAsync:signInAccount,isPending:isSigningIn}=useSignInAccountMutation()
+  const { mutateAsync: signInAccount, isPending: isSigningIn } =
+    useSignInAccountMutation();
 
   const form = useForm<z.infer<typeof SignInValidation>>({
     resolver: zodResolver(SignInValidation),
@@ -34,25 +33,25 @@ const SigninForm = () => {
     },
   });
 
-  const onSubmit=async(values: z.infer<typeof SignInValidation>) =>{
-   const session=await signInAccount({email:values.email,password:values.password});
+  const onSubmit = async (values: z.infer<typeof SignInValidation>) => {
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password,
+    });
 
+    if (!session) {
+      return toast("Sign in failed, please try again");
+    }
 
-   if(!session) {
-    return toast("Sign in failed, please try again");
-   }
+    const isLoggedIn = await checkAuthUser();
 
-   const isLoggedIn=await checkAuthUser();
-
-
-   if(isLoggedIn) {
-    form.reset()
-    navigate("/")
-   } else {
-    return toast("Sign in failed, Please try again.")
-   }
-  }
-
+    if (isLoggedIn) {
+      form.reset();
+      navigate("/");
+    } else {
+      return toast("Sign in failed, Please try again.");
+    }
+  };
 
   return (
     <div>
