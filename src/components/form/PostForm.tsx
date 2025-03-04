@@ -15,12 +15,20 @@ import { Textarea } from "../ui/textarea";
 import FileUploader from "../shared/FileUploader";
 import { PostValidation } from "@/lib/validation/schema";
 import { Models } from "appwrite";
+import { useCreatePostMutation } from "@/lib/react-query/queriesAndMutations";
+import { useUserContext } from "@/context/AuthContext";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface PostFormProps {
   post?: Models.Document;
 }
 
 const PostForm = ({ post }: PostFormProps) => {
+  const { mutateAsync: createPost } = useCreatePostMutation();
+  const { user } = useUserContext();
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
     defaultValues: {
@@ -31,8 +39,14 @@ const PostForm = ({ post }: PostFormProps) => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof PostValidation>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof PostValidation>) {
+    const newPost = await createPost({ ...values, userId: user.id });
+
+    if (!newPost) {
+      return toast("Please try again");
+    }
+
+    navigate("/");
   }
 
   return (
