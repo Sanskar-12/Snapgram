@@ -1,5 +1,5 @@
-import { INewUser } from "@/types";
-import { account, appwriteConfig, avatars, databases } from "./config";
+import { INewPost, INewUser } from "@/types";
+import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import { ID, Query } from "appwrite";
 
 export const saveUserToDB = async (user: {
@@ -102,6 +102,29 @@ export const signOutAccount = async () => {
     const session = await account.deleteSession("current");
 
     return session;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const createPost = async (post: INewPost) => {
+  try {
+    // upload image to appwrite storage
+    const uploadedFile = await uploadFile(post.file[0]);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const uploadFile = async (file: File) => {
+  try {
+    const uploadedFile = await storage.createFile(
+      appwriteConfig.storageId,
+      ID.unique(),
+      file
+    );
+
+    return uploadedFile;
   } catch (error) {
     console.log(error);
   }
