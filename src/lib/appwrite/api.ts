@@ -275,3 +275,21 @@ export const deleteSavedPost = async (saveId: string) => {
     console.log(error);
   }
 };
+
+export const getPostById = async (postId: string) => {
+  try {
+    const post = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      postId
+    );
+
+    if (!post) {
+      throw Error;
+    }
+
+    return post;
+  } catch (error) {
+    console.log(error);
+  }
+};
