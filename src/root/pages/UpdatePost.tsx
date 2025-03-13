@@ -1,6 +1,14 @@
 import PostForm from "@/components/form/PostForm";
+import Loader from "@/components/shared/Loader";
+import { useGetPostById } from "@/lib/react-query/queriesAndMutations";
+import { useParams } from "react-router-dom";
 
 const UpdatePost = () => {
+  const { id } = useParams();
+  const { data: post, isPending } = useGetPostById(id || "");
+
+  if (isPending) return <Loader />;
+
   return (
     <div className="flex flex-1">
       <div className="common-container">
@@ -13,7 +21,7 @@ const UpdatePost = () => {
           />
           <h2 className="h3-bold md:h2-bold text-left w-full">Edit Post</h2>
         </div>
-        <PostForm />
+        <PostForm post={post} action={"Update"} />
       </div>
     </div>
   );
