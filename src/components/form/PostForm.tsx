@@ -15,7 +15,10 @@ import { Textarea } from "../ui/textarea";
 import FileUploader from "../shared/FileUploader";
 import { PostValidation } from "@/lib/validation/schema";
 import { Models } from "appwrite";
-import { useCreatePostMutation } from "@/lib/react-query/queriesAndMutations";
+import {
+  useCreatePostMutation,
+  useUpdatePostMutation,
+} from "@/lib/react-query/queriesAndMutations";
 import { useUserContext } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +29,10 @@ interface PostFormProps {
 }
 
 const PostForm = ({ post, action }: PostFormProps) => {
-  const { mutateAsync: createPost } = useCreatePostMutation();
+  const { mutateAsync: createPost, isPending: isLoadingCreate } =
+    useCreatePostMutation();
+  const { mutateAsync: updatePost, isPending: isLoadingUpdate } =
+    useUpdatePostMutation();
   const { user } = useUserContext();
   const navigate = useNavigate();
 
@@ -41,6 +47,21 @@ const PostForm = ({ post, action }: PostFormProps) => {
   });
 
   async function onSubmit(values: z.infer<typeof PostValidation>) {
+    if (post && action === "Update") {
+      const updatedPost = await updatePost({
+        ...values,
+        postId: post.$id,
+        imageId: post?.imageId,
+        imageUrl: post?.imageUrl,
+      });
+
+      if (!updatedPost) {
+        return toast("Please try again");
+      }
+
+      return navigate(`/post/${post.$id}`);
+    }
+
     const newPost = await createPost({ ...values, userId: user.id });
 
     if (!newPost) {
@@ -128,6 +149,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
           <Button
             type="submit"
             className="shad-button_primary whitespace-nowrap"
+            disabled={isLoadingUpdate || isLoadingCreate}
           >
             Submit
           </Button>

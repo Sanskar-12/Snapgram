@@ -137,7 +137,7 @@ export const useGetPostById = (postId: string) => {
   });
 };
 
-export const useUpdatePost = () => {
+export const useUpdatePostMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -150,7 +150,7 @@ export const useUpdatePost = () => {
   });
 };
 
-export const useDeletePost = () => {
+export const useDeletePostMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
