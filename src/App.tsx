@@ -10,9 +10,9 @@ import Saved from "./root/pages/Saved";
 import AllUsers from "./root/pages/AllUsers";
 import CreatePost from "./root/pages/CreatePost";
 import UpdatePost from "./root/pages/UpdatePost";
-import Post from "./root/pages/Post";
 import Profile from "./root/pages/Profile";
 import UpdateProfile from "./root/pages/UpdateProfile";
+import PostDetails from "./root/pages/PostDetails";
 
 const App = () => {
   return (
@@ -32,7 +32,7 @@ const App = () => {
           <Route path="/all-users" element={<AllUsers />} />
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/update-post/:id" element={<UpdatePost />} />
-          <Route path="/posts/:id" element={<Post />} />
+          <Route path="/post/:id" element={<PostDetails />} />
           <Route path="/profile/:id/*" element={<Profile />} />
           <Route path="/update-profile/:id" element={<UpdateProfile />} />
         </Route>
